@@ -13,12 +13,13 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
-
+# Home page
 @app.route('/')
 def Index():
     return render_template('index.html')
 
 
+# Student page
 @app.route('/studenten')
 def studenten():
     cur = mysql.connection.cursor()
@@ -58,6 +59,7 @@ def delete_student(student_nr):
 @app.route('/update_student', methods=['POST', 'GET'])
 def update_student():
     if request.method == 'POST':
+        old_student_nr = request.form['id']
         student_nr = request.form['student_nr']
         voornaam = request.form['voornaam']
         achternaam = request.form['achternaam']
@@ -66,13 +68,62 @@ def update_student():
         studierichting = request.form['studierichting']
         cur = mysql.connection.cursor()
         cur.execute("""
-               UPDATE studenten
-               SET student_nr=%s, voornaam=%s, achternaam=%s, cohort=%s, leerjaar=%s, studierichting=%s
-               WHERE student_nr=%s
-            """, (student_nr, voornaam, achternaam, cohort, leerjaar, studierichting, student_nr))
+            UPDATE studenten
+            SET student_nr=%s, voornaam=%s, achternaam=%s, cohort=%s, leerjaar=%s, studierichting=%s
+            WHERE student_nr=%s
+            """, (student_nr, voornaam, achternaam, cohort, leerjaar, studierichting, old_student_nr))
         flash("Data Updated Successfully")
         mysql.connection.commit()
         return redirect(url_for('studenten'))
+
+# Vakken page
+@app.route('/vakken')
+def vakken():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM vakken")
+    data = cur.fetchall()
+    cur.close()
+
+    return render_template('vakken.html', vakken=data)
+
+
+@app.route('/new_vak', methods=['POST'])
+def new_vak():
+    if request.method == "POST":
+        flash("Data Inserted Successfully")
+        vak_code = request.form['vak_code']
+        naam = request.form['naam']
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "INSERT INTO vakken (vak_code, naam) VALUES (%s, %s)", (vak_code, naam))
+        mysql.connection.commit()
+        return redirect(url_for('vakken'))
+
+
+@app.route('/delete_vak/<string:vak_code>', methods=['GET'])
+def delete_vak(vak_code):
+    flash("Record Has Been Deleted Successfully")
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM vakken WHERE vak_code=%s", (vak_code))
+    mysql.connection.commit()
+    return redirect(url_for('vakken'))
+
+
+@app.route('/update_vak', methods=['POST', 'GET'])
+def update_vak():
+    if request.method == 'POST':
+        old_vak_code = request.form['id']
+        vak_code = request.form['vak_code']
+        naam = request.form['naam']
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            UPDATE vakken
+            SET vak_code=%s, naam=%s
+            WHERE vak_code=%s
+            """, (vak_code, naam, old_vak_code))
+        flash("Data Updated Successfully")
+        mysql.connection.commit()
+        return redirect(url_for('vakken'))
 
 
 if __name__ == "__main__":
