@@ -7,10 +7,13 @@
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
+SET SQL_MODE
+= "NO_AUTO_VALUE_ON_sZERO";
+SET AUTOCOMMIT
+= 0;
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone
+= "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -28,20 +31,30 @@ SET time_zone = "+00:00";
 -- Table structure for table `studenten`
 --
 
-CREATE TABLE `studenten` (
-  `student_nr` varchar(255) NOT NULL,
-  `voornaam` varchar(255) NOT NULL,
-  `achternaam` varchar(255) NOT NULL,
-  `cohort` varchar(255) NOT NULL,
-  `leerjaar` varchar(255) NOT NULL,
-  `studierichting` varchar(255) NOT NULL
+CREATE TABLE `studenten`
+(
+  `student_nr` varchar
+(255) NOT NULL,
+  `voornaam` varchar
+(255) NOT NULL,
+  `achternaam` varchar
+(255) NOT NULL,
+  `cohort` varchar
+(255) NOT NULL,
+  `leerjaar` varchar
+(255) NOT NULL,
+  `studierichting` varchar
+(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `studenten`
 --
 
-INSERT INTO `studenten` (`student_nr`, `voornaam`, `achternaam`, `cohort`, `leerjaar`, `studierichting`) VALUES
+INSERT INTO `studenten` (`
+student_nr`,
+`voornaam
+`, `achternaam`, `cohort`, `leerjaar`, `studierichting`) VALUES
 ('1111111', 'Shaniel', 'Samadhan', '2019-2020', '4', 'ICT');
 
 -- --------------------------------------------------------
@@ -50,16 +63,22 @@ INSERT INTO `studenten` (`student_nr`, `voornaam`, `achternaam`, `cohort`, `leer
 -- Table structure for table `vakken`
 --
 
-CREATE TABLE `vakken` (
-  `vak_code` varchar(255) NOT NULL,
-  `naam` varchar(255) NOT NULL
+CREATE TABLE `vakken`
+(
+  `vak_code` varchar
+(255) NOT NULL,
+  `naam` varchar
+(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `vakken`
 --
 
-INSERT INTO `vakken` (`vak_code`, `naam`) VALUES
+INSERT INTO `vakken` (`
+vak_code`,
+`naam
+`) VALUES
 ('1', 'Wiskunde'),
 ('2', 'UML');
 
@@ -71,13 +90,15 @@ INSERT INTO `vakken` (`vak_code`, `naam`) VALUES
 -- Indexes for table `studenten`
 --
 ALTER TABLE `studenten`
-  ADD PRIMARY KEY (`student_nr`);
+ADD PRIMARY KEY
+(`student_nr`);
 
 --
 -- Indexes for table `vakken`
 --
 ALTER TABLE `vakken`
-  ADD PRIMARY KEY (`vak_code`);
+ADD PRIMARY KEY
+(`vak_code`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
