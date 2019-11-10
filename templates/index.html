@@ -60,10 +60,11 @@
                               <div class="form-group">
                                  <label>Student:</label>
                                  <input type="hidden" name="id" value="{{ presentie.id }}">
-                                 <select name="student">
+                                 <select name="student" class="form-control">
                                     {% for student in studenten %}
 
-                                    <option value="{{ student.student_nr }}">
+                                    <option value="{{ student.student_nr }}"
+                                       {%if student.student_nr==presentie.student_nr%} selected {%endif%}>
                                        {{ student.achternaam }}
                                     </option>
 
@@ -72,7 +73,16 @@
                               </div>
                               <div class="form-group">
                                  <label>Vak:</label>
-                                 <input type="text" class="form-control" name="vak" value="{{ presentie.vak }}">
+                                 <select name="vak" class="form-control">
+                                    {% for vak in vakken %}
+
+                                    <option value="{{ vak.vak_code }}" {%if vak.vak_code==presentie.vak_code%} selected
+                                       {%endif%}>
+                                       {{ vak.naam }}
+                                    </option>
+
+                                    {% endfor %}
+                                 </select>
                               </div>
                               <div class="form-group">
                                  <label>Presentie:</label>
@@ -85,7 +95,7 @@
                               </div>
                               <div class="form-group">
                                  <label>Datum:</label>
-                                 <input type="text" class="form-control" name="datum" value="{{ presentie.datum }}">
+                                 <input type="date" class="form-control" name="datum" value="{{ presentie.datum }}">
                               </div>
                               <div class="form-group">
                                  <button class="btn btn-primary" type="submit">Bewerken</button>
@@ -115,7 +125,7 @@
                      <form action="{{ url_for('new_presentie') }}" method="POST">
                         <div class="form-group">
                            <label>Student:</label>
-                           <select name="student">
+                           <select name="student" class="form-control">
                               {% for student in studenten %}
 
                               <option value="{{ student.student_nr }}">{{ student.achternaam }}</option>
@@ -125,7 +135,13 @@
                         </div>
                         <div class="form-group">
                            <label>Vak:</label>
-                           <input type="text" class="form-control" name="vak" required="1">
+                           <select name="vak" class="form-control">
+                              {% for vak in vakken %}
+
+                              <option value="{{ vak.vak_code }}">{{ vak.naam }}</option>
+
+                              {% endfor %}
+                           </select>
                         </div>
                         <div class="form-group">
                            <label>Presentie:</label>

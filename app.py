@@ -15,10 +15,11 @@ mysql = MySQL(app)
 
 # Presentie page
 @app.route('/')
-def Index():
+def index():
     cur = mysql.connection.cursor()
     cur.execute("""
         SELECT
+        id,
         studenten.voornaam,
         studenten.achternaam,
         studenten.student_nr,
@@ -33,35 +34,41 @@ def Index():
         INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
     """)
     joinData = cur.fetchall()
-    # cur.close()
 
     cur.execute(""" 
         Select * from studenten
     """)
     studenten = cur.fetchall()
+
+    cur.execute(""" 
+        Select * from vakken
+    """)
+    vakken = cur.fetchall()
     cur.close()
 
-    return render_template('index.html', presenties=joinData, studenten=studenten)
+    return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken)
 
 
 @app.route('/new_presentie', methods=['POST'])
 def new_presentie():
     if request.method == "POST":
-        vak_code = request.form['vak_code']
-        naam = request.form['naam']
+        student = request.form['student']
+        vak = request.form['vak']
+        presentie = request.form['presentie']
+        blok = request.form['blok']
         cur = mysql.connection.cursor()
         cur.execute(
-            "INSERT INTO vakken (vak_code, naam) VALUES (%s, %s)", (vak_code, naam))
+            "INSERT INTO presenties (student_nr, vak_code, presentie, blok) VALUES (%s, %s, %s, %s)", (student, vak, presentie, blok))
         mysql.connection.commit()
-        flash("Vak " + naam + " is toegevoegd!")
+        flash("Presentie is toegevoegd!")
         return redirect(url_for('index'))
 
 
-@app.route('/delete_presentie/<string:vak_code>', methods=['GET'])
-def delete_presentie(vak_code):
-    flash("Het vak is verwijderd!")
+@app.route('/delete_presentie/<string:id>', methods=['GET'])
+def delete_presentie(id):
+    flash("Presentie is verwijderd!")
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM vakken WHERE vak_code=%s", (vak_code))
+    cur.execute("DELETE FROM presenties WHERE id=%s", (id))
     mysql.connection.commit()
     return redirect(url_for('index'))
 
@@ -69,16 +76,19 @@ def delete_presentie(vak_code):
 @app.route('/update_presentie', methods=['POST', 'GET'])
 def update_presentie():
     if request.method == 'POST':
-        old_vak_code = request.form['id']
-        vak_code = request.form['vak_code']
-        naam = request.form['naam']
+        id = request.form['id']
+        student_nr = request.form['student']
+        vak_code = request.form['vak']
+        presentie = request.form['presentie']
+        blok = request.form['blok']
+        datum = request.form['datum']
         cur = mysql.connection.cursor()
         cur.execute("""
-            UPDATE vakken
-            SET vak_code=%s, naam=%s
-            WHERE vak_code=%s
-            """, (vak_code, naam, old_vak_code))
-        flash("Vak " + naam + " is bijgewerkt!")
+            UPDATE presenties
+            SET student_nr=%s, vak_code=%s, presentie=%s, blok=%s, datum=%s
+            WHERE id=%s
+            """, (student_nr, vak_code, presentie, blok, datum, id))
+        flash("Presentie is bijgewerkt!")
         mysql.connection.commit()
         return redirect(url_for('index'))
 
