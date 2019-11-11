@@ -13,6 +13,8 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
+searched = False
+
 # Presentie page
 @app.route('/')
 def index():
@@ -46,7 +48,9 @@ def index():
     vakken = cur.fetchall()
     cur.close()
 
-    return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken)
+    searched = False
+
+    return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken, searched=searched)
 
 
 @app.route('/new_presentie', methods=['POST'])
@@ -91,6 +95,75 @@ def update_presentie():
         flash("Presentie is bijgewerkt!")
         mysql.connection.commit()
         return redirect(url_for('index'))
+
+
+@app.route('/search_presentie', methods=['POST', 'GETS'])
+def search_presentie():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT
+        id,
+        studenten.voornaam,
+        studenten.achternaam,
+        studenten.student_nr,
+        vakken.vak_code,
+        vakken.naam,
+        presentie,
+        blok,
+        datum
+        FROM
+        presenties
+        INNER JOIN studenten ON studenten.student_nr = presenties.student_nr
+        INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
+    """)
+    joinData = cur.fetchall()
+
+    cur.execute(""" 
+        Select * from studenten
+    """)
+    studenten = cur.fetchall()
+
+    cur.execute(""" 
+        Select * from vakken
+    """)
+    vakken = cur.fetchall()
+    # cur.close()
+
+    if request.method == 'POST':
+        search = request.form['search_presentie']
+
+        cur.execute("""
+        SELECT
+        id,
+        studenten.voornaam,
+        studenten.achternaam,
+        studenten.student_nr,
+        vakken.vak_code,
+        vakken.naam,
+        presentie,
+        blok,
+        datum
+        FROM
+        presenties
+        INNER JOIN studenten ON studenten.student_nr = presenties.student_nr
+        INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
+        WHERE id LIKE %s OR
+        studenten.voornaam LIKE %s OR
+        studenten.achternaam LIKE %s OR
+        studenten.student_nr LIKE %s OR
+        vakken.vak_code LIKE %s OR
+        vakken.naam LIKE %s OR
+        presentie LIKE %s OR
+        blok LIKE %s OR
+        datum LIKE %s
+        """, ([search, search, search, search, search, search, search, search, search]))
+        mysql.connection.commit()
+        data = cur.fetchall()
+        cur.close()
+
+        searched = True
+
+        return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken, search_data=data, searched=searched, term=search)
 
 
 # Student page

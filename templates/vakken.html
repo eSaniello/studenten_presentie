@@ -7,7 +7,6 @@
     <div class="row">
         <div class="col md-12">
             <h2>
-                <a href="/" class="btn btn-primary  pull-left">HOME</a>
                 Vakken Lijst
                 <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
                     data-target="#newvakmodal">Nieuw vak toevoegen</button></h2>
@@ -42,7 +41,7 @@
                                 <h4 class="modal-title">Wijzig Vak</h4>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ url_for('update_vak') }}" method="POST">
+                                <form action="{{ url_for('update_vak') }}" method="POST" autocomplete="off">
                                     <div class="form-group">
                                         <label>Vak code:</label>
                                         <input type="hidden" name="id" value="{{ vak.vak_code }}">
@@ -78,7 +77,7 @@
                         <h4 class="modal-title">Voeg Nieuw Student</h4>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ url_for('new_vak') }}" method="POST">
+                        <form action="{{ url_for('new_vak') }}" method="POST" autocomplete="off">
                             <div class="form-group">
                                 <label>Vak code:</label>
                                 <input type="text" class="form-control" name="vak_code" required="1">

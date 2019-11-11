@@ -6,164 +6,245 @@
 <div class="container">
    <div class="row">
       <div class="col md-12">
-         <a href="/studenten" class="btn btn-primary">Studenten</a>
-         <a href="/vakken" class="btn btn-primary">Vakken</a>
-      </div>
-   </div>
-
-
-   <div class="container">
-      <div class="row">
+         <h2>
+            Presentielijst
+            <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
+               data-target="#newpresentiemodal">Nieuw presentie Toevoegen</button>
+         </h2>
          <div class="col md-12">
-            <h2>
-               Presentielijst
-               <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
-                  data-target="#newpresentiemodal">Nieuw presentie Toevoegen</button></h2>
+            <form action="{{url_for('search_presentie')}}" method="POST" class="form-group" autocomplete="off">
+               <input class="form-control" type="text" name="search_presentie" id="search_presentie" required
+                  value="{{term}}">
+               {%if searched == True%}
+               <a href="/" class="btn form-control btn-primary">Clear</a>
+               {%else%}
+               <input type="submit" value="Search" class="form-control btn btn-primary">
+               {%endif%}
+            </form>
+         </div>
+         <hr>
+         {% include 'includes/messages.html' %}
 
-            {% include 'includes/messages.html' %}
+         <!-- Presentie table view -->
+         <table class="table table-striped">
+            <tr>
+               <th>Student</th>
+               <th>Vak</th>
+               <th>Presentie</th>
+               <th>Blok</th>
+               <th>Datum</th>
+               <th></th>
+            </tr>
+            {%if searched == False%}
+            {% for presentie in presenties %}
+            <tr>
+               <td>{{presentie.achternaam}}</td>
+               <td>{{presentie.naam}}</td>
+               <td>{{presentie.presentie}}</td>
+               <td>{{presentie.blok}}</td>
+               <td>{{presentie.datum}}</td>
+               <td>
+                  <a href="/update_presentie/{{ presentie.id }}" class="btn btn-warning btn-xs" data-toggle="modal"
+                     data-target="#modaledit_presentie{{ presentie.id }}">Wijzig</a>
+                  <a href="/delete_presentie/{{ presentie.id }}" class="btn btn-danger btn-xs"
+                     onclick="return confirm('Bent u zeker?')">Verwijder</a>
+               </td>
+            </tr>
 
-            <!-- Presentie table view -->
-            <table class="table table-striped">
-               <tr>
-                  <th>Student</th>
-                  <th>Vak</th>
-                  <th>Presentie</th>
-                  <th>Blok</th>
-                  <th>Datum</th>
-                  <th></th>
-               </tr>
-               {% for presentie in presenties %}
-               <tr>
-                  <td>{{presentie.achternaam}}</td>
-                  <td>{{presentie.naam}}</td>
-                  <td>{{presentie.presentie}}</td>
-                  <td>{{presentie.blok}}</td>
-                  <td>{{presentie.datum}}</td>
-                  <td>
-                     <a href="/update_presentie/{{ presentie.id }}" class="btn btn-warning btn-xs" data-toggle="modal"
-                        data-target="#modaledit_presentie{{ presentie.id }}">Wijzig</a>
-                     <a href="/delete_presentie/{{ presentie.id }}" class="btn btn-danger btn-xs"
-                        onclick="return confirm('Bent u zeker?')">Verwijder</a>
-                  </td>
-               </tr>
+            <!-- update form modal -->
+            <div id="modaledit_presentie{{ presentie.id }}" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Wijzig Presentie</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{ url_for('update_presentie') }}" method="POST" autocomplete="off">
+                           <div class="form-group">
+                              <label>Student:</label>
+                              <input type="hidden" name="id" value="{{ presentie.id }}">
+                              <select name="student" class="form-control">
+                                 {% for student in studenten %}
 
-               <!-- update form modal -->
-               <div id="modaledit_presentie{{ presentie.id }}" class="modal fade" role="dialog">
-                  <div class="modal-dialog">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <button type="button" class="close" data-dismiss="modal">&times;</button>
-                           <h4 class="modal-title">Wijzig Presentie</h4>
-                        </div>
-                        <div class="modal-body">
-                           <form action="{{ url_for('update_presentie') }}" method="POST">
-                              <div class="form-group">
-                                 <label>Student:</label>
-                                 <input type="hidden" name="id" value="{{ presentie.id }}">
-                                 <select name="student" class="form-control">
-                                    {% for student in studenten %}
+                                 <option value="{{ student.student_nr }}"
+                                    {%if student.student_nr==presentie.student_nr%} selected {%endif%}>
+                                    {{ student.achternaam }}
+                                 </option>
 
-                                    <option value="{{ student.student_nr }}"
-                                       {%if student.student_nr==presentie.student_nr%} selected {%endif%}>
-                                       {{ student.achternaam }}
-                                    </option>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label>Vak:</label>
+                              <select name="vak" class="form-control">
+                                 {% for vak in vakken %}
 
-                                    {% endfor %}
-                                 </select>
-                              </div>
-                              <div class="form-group">
-                                 <label>Vak:</label>
-                                 <select name="vak" class="form-control">
-                                    {% for vak in vakken %}
+                                 <option value="{{ vak.vak_code }}" {%if vak.vak_code==presentie.vak_code%} selected
+                                    {%endif%}>
+                                    {{ vak.naam }}
+                                 </option>
 
-                                    <option value="{{ vak.vak_code }}" {%if vak.vak_code==presentie.vak_code%} selected
-                                       {%endif%}>
-                                       {{ vak.naam }}
-                                    </option>
-
-                                    {% endfor %}
-                                 </select>
-                              </div>
-                              <div class="form-group">
-                                 <label>Presentie:</label>
-                                 <input type="text" class="form-control" name="presentie"
-                                    value="{{ presentie.presentie }}">
-                              </div>
-                              <div class="form-group">
-                                 <label>Blok:</label>
-                                 <input type="text" class="form-control" name="blok" value="{{ presentie.blok }}">
-                              </div>
-                              <div class="form-group">
-                                 <label>Datum:</label>
-                                 <input type="date" class="form-control" name="datum" value="{{ presentie.datum }}">
-                              </div>
-                              <div class="form-group">
-                                 <button class="btn btn-primary" type="submit">Bewerken</button>
-                              </div>
-                           </form>
-                        </div>
-                        <div class="modal-footer">
-                           <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                        </div>
+                                 {% endfor %}
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label>Presentie:</label>
+                              <input type="text" class="form-control" name="presentie"
+                                 value="{{ presentie.presentie }}">
+                           </div>
+                           <div class="form-group">
+                              <label>Blok:</label>
+                              <input type="text" class="form-control" name="blok" value="{{ presentie.blok }}">
+                           </div>
+                           <div class="form-group">
+                              <label>Datum:</label>
+                              <input type="date" class="form-control" name="datum" value="{{ presentie.datum }}">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Bewerken</button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
                      </div>
                   </div>
                </div>
-               {% endfor  %}
-               </tbody>
-            </table>
-         </div>
+            </div>
+            {% endfor %}
+            {%else%}
+            {%for presentie in search_data%}
+            <tr>
+               <td>{{presentie.achternaam}}</td>
+               <td>{{presentie.naam}}</td>
+               <td>{{presentie.presentie}}</td>
+               <td>{{presentie.blok}}</td>
+               <td>{{presentie.datum}}</td>
+               <td>
+                  <a href="/update_presentie/{{ presentie.id }}" class="btn btn-warning btn-xs" data-toggle="modal"
+                     data-target="#modaledit_presentie{{ presentie.id }}">Wijzig</a>
+                  <a href="/delete_presentie/{{ presentie.id }}" class="btn btn-danger btn-xs"
+                     onclick="return confirm('Bent u zeker?')">Verwijder</a>
+               </td>
+            </tr>
 
-         <!-- new presentie Modal -->
-         <div id="newpresentiemodal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-               <div class="modal-content">
-                  <div class="modal-header">
-                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                     <h4 class="modal-title">Voeg Nieuw Presentie</h4>
+            <!-- update form modal -->
+            <div id="modaledit_presentie{{ presentie.id }}" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Wijzig Presentie</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{ url_for('update_presentie') }}" method="POST" autocomplete="off">
+                           <div class="form-group">
+                              <label>Student:</label>
+                              <input type="hidden" name="id" value="{{ presentie.id }}">
+                              <select name="student" class="form-control">
+                                 {% for student in studenten %}
+
+                                 <option value="{{ student.student_nr }}"
+                                    {%if student.student_nr==presentie.student_nr%} selected {%endif%}>
+                                    {{ student.achternaam }}
+                                 </option>
+
+                                 {% endfor %}
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label>Vak:</label>
+                              <select name="vak" class="form-control">
+                                 {% for vak in vakken %}
+
+                                 <option value="{{ vak.vak_code }}" {%if vak.vak_code==presentie.vak_code%} selected
+                                    {%endif%}>
+                                    {{ vak.naam }}
+                                 </option>
+
+                                 {% endfor %}
+                              </select>
+                           </div>
+                           <div class="form-group">
+                              <label>Presentie:</label>
+                              <input type="text" class="form-control" name="presentie"
+                                 value="{{ presentie.presentie }}">
+                           </div>
+                           <div class="form-group">
+                              <label>Blok:</label>
+                              <input type="text" class="form-control" name="blok" value="{{ presentie.blok }}">
+                           </div>
+                           <div class="form-group">
+                              <label>Datum:</label>
+                              <input type="date" class="form-control" name="datum" value="{{ presentie.datum }}">
+                           </div>
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Bewerken</button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                     </div>
                   </div>
-                  <div class="modal-body">
-                     <form action="{{ url_for('new_presentie') }}" method="POST">
-                        <div class="form-group">
-                           <label>Student:</label>
-                           <select name="student" class="form-control">
-                              {% for student in studenten %}
+               </div>
+            </div>
+            {% endfor %}
+            {%endif%}
+            </tbody>
+         </table>
+      </div>
 
-                              <option value="{{ student.student_nr }}">{{ student.achternaam }}</option>
+      <!-- new presentie Modal -->
+      <div id="newpresentiemodal" class="modal fade" role="dialog">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Voeg Nieuw Presentie</h4>
+               </div>
+               <div class="modal-body">
+                  <form action="{{ url_for('new_presentie') }}" method="POST" autocomplete="off">
+                     <div class="form-group">
+                        <label>Student:</label>
+                        <select name="student" class="form-control">
+                           {% for student in studenten %}
 
-                              {% endfor %}
-                           </select>
-                        </div>
-                        <div class="form-group">
-                           <label>Vak:</label>
-                           <select name="vak" class="form-control">
-                              {% for vak in vakken %}
+                           <option value="{{ student.student_nr }}">{{ student.achternaam }}</option>
 
-                              <option value="{{ vak.vak_code }}">{{ vak.naam }}</option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label>Vak:</label>
+                        <select name="vak" class="form-control">
+                           {% for vak in vakken %}
 
-                              {% endfor %}
-                           </select>
-                        </div>
-                        <div class="form-group">
-                           <label>Presentie:</label>
-                           <input type="text" class="form-control" name="presentie" required="1">
-                        </div>
-                        <div class="form-group">
-                           <label>blok:</label>
-                           <input type="text" class="form-control" name="blok" required="1">
-                        </div>
-                        <div class="form-group">
-                           <button class="btn btn-primary" type="submit">Toevoegen</button>
-                        </div>
-                     </form>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
-                  </div>
+                           <option value="{{ vak.vak_code }}">{{ vak.naam }}</option>
+
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="form-group">
+                        <label>Presentie:</label>
+                        <input type="text" class="form-control" name="presentie" required="1">
+                     </div>
+                     <div class="form-group">
+                        <label>blok:</label>
+                        <input type="text" class="form-control" name="blok" required="1">
+                     </div>
+                     <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Toevoegen</button>
+                     </div>
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
                </div>
             </div>
          </div>
       </div>
    </div>
-
 </div>
 {% endblock %}
