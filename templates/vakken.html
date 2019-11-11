@@ -5,94 +5,108 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col md-12">
-            <h2>
-                Vakken Lijst
-                <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
-                    data-target="#newvakmodal">Nieuw vak toevoegen</button></h2>
+        <nav class="navbar navbar-expand-sm bg-light">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Studenten Presentie</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/studenten">Studenten</a></li>
+                <li><a href="/vakken">Vakken</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col md-12">
+                <h2>
+                    Vakken Lijst
+                    <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
+                        data-target="#newvakmodal">Nieuw vak toevoegen</button></h2>
 
-            {% include 'includes/messages.html' %}
+                {% include 'includes/messages.html' %}
 
-            <!-- Vak table view -->
-            <table class="table table-striped">
-                <tr>
-                    <th>Vak code</th>
-                    <th>Vaknaam</th>
-                    <th></th>
-                </tr>
-                {% for vak in vakken %}
-                <tr>
-                    <td>{{vak.vak_code}}</td>
-                    <td>{{vak.naam}}</td>
-                    <td>
-                        <a href="/update_vak/{{ vak.vak_code }}" class="btn btn-warning btn-xs" data-toggle="modal"
-                            data-target="#modaledit_vak{{ vak.vak_code }}">Wijzig</a>
-                        <a href="/delete_vak/{{ vak.vak_code }}" class="btn btn-danger btn-xs"
-                            onclick="return confirm('Bent u zeker?')">Verwijder</a>
-                    </td>
-                </tr>
+                <!-- Vak table view -->
+                <table class="table table-striped">
+                    <tr>
+                        <th>Vak code</th>
+                        <th>Vaknaam</th>
+                        <th></th>
+                    </tr>
+                    {% for vak in vakken %}
+                    <tr>
+                        <td>{{vak.vak_code}}</td>
+                        <td>{{vak.naam}}</td>
+                        <td>
+                            <a href="/update_vak/{{ vak.vak_code }}" class="btn btn-warning btn-xs" data-toggle="modal"
+                                data-target="#modaledit_vak{{ vak.vak_code }}">Wijzig</a>
+                            <a href="/delete_vak/{{ vak.vak_code }}" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Bent u zeker?')">Verwijder</a>
+                        </td>
+                    </tr>
 
-                <!-- update form modal -->
-                <div id="modaledit_vak{{ vak.vak_code }}" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Wijzig Vak</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{ url_for('update_vak') }}" method="POST" autocomplete="off">
-                                    <div class="form-group">
-                                        <label>Vak code:</label>
-                                        <input type="hidden" name="id" value="{{ vak.vak_code }}">
-                                        <input type="text" class="form-control" name="vak_code"
-                                            value="{{ vak.vak_code }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Vak naam:</label>
-                                        <input type="text" class="form-control" name="naam" value="{{ vak.naam }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-primary" type="submit">Bewerken</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                    <!-- update form modal -->
+                    <div id="modaledit_vak{{ vak.vak_code }}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Wijzig Vak</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('update_vak') }}" method="POST" autocomplete="off">
+                                        <div class="form-group">
+                                            <label>Vak code:</label>
+                                            <input type="hidden" name="id" value="{{ vak.vak_code }}">
+                                            <input type="text" class="form-control" name="vak_code"
+                                                value="{{ vak.vak_code }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Vak naam:</label>
+                                            <input type="text" class="form-control" name="naam" value="{{ vak.naam }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" type="submit">Bewerken</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {% endfor  %}
-                </tbody>
-            </table>
-        </div>
+                    {% endfor  %}
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- new vak Modal -->
-        <div id="newvakmodal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Voeg Nieuw Student</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ url_for('new_vak') }}" method="POST" autocomplete="off">
-                            <div class="form-group">
-                                <label>Vak code:</label>
-                                <input type="text" class="form-control" name="vak_code" required="1">
-                            </div>
-                            <div class="form-group">
-                                <label>Vaknaam:</label>
-                                <input type="text" class="form-control" name="naam" required="1">
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-primary" type="submit">Toevoegen</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+            <!-- new vak Modal -->
+            <div id="newvakmodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Voeg Nieuw Student</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('new_vak') }}" method="POST" autocomplete="off">
+                                <div class="form-group">
+                                    <label>Vak code:</label>
+                                    <input type="text" class="form-control" name="vak_code" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Vaknaam:</label>
+                                    <input type="text" class="form-control" name="naam" required="1">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">Toevoegen</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                        </div>
                     </div>
                 </div>
             </div>

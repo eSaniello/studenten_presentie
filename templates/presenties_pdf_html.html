@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h1 class="text-primary">Presentielijst</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Student</th>
+        <th>Vak</th>
+        <th>Presentie</th>
+        <th>Blok</th>
+        <th>Datum</th>
+    </tr>
+    {% for Presentie in presenties %}
+    <tr>
+        <td>{{Presentie.achternaam}}</td>
+        <td>{{Presentie.naam}}</td>
+        <td>{{Presentie.presentie}}</td>
+        <td>{{Presentie.blok}}</td>
+        <td>{{Presentie.datum}}</td>
+    </tr>
+    {%endfor%}
+</table>
+{% endblock %}

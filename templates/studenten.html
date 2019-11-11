@@ -5,141 +5,154 @@
 {% block body %}
 <div class="container">
    <div class="row">
-      <div class="col md-12">
-         <h2>
-            Studenten Lijst
-            <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
-               data-target="#newstudentmodal">Nieuw Student Toevoegen</button></h2>
+      <nav class="navbar navbar-expand-sm bg-light">
+         <div class="navbar-header">
+            <a class="navbar-brand" href="/">Studenten Presentie</a>
+         </div>
+         <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/studenten">Studenten</a></li>
+            <li><a href="/vakken">Vakken</a></li>
+         </ul>
+      </nav>
+   </div>
+   <div class="container">
+      <div class="row">
+         <div class="col md-12">
+            <h2>
+               Studenten Lijst
+               <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
+                  data-target="#newstudentmodal">Nieuw Student Toevoegen</button></h2>
 
-         {% include 'includes/messages.html' %}
+            {% include 'includes/messages.html' %}
 
-         <!-- Student table view -->
-         <table class="table table-striped">
-            <tr>
-               <th>Student nr.</th>
-               <th>Voornaam</th>
-               <th>Achternaam</th>
-               <th>Cohort</th>
-               <th>Leerjaar</th>
-               <th>Studierichting</th>
-               <th></th>
-            </tr>
-            {% for student in students %}
-            <tr>
-               <td>{{student.student_nr}}</td>
-               <td>{{student.voornaam}}</td>
-               <td>{{student.achternaam}}</td>
-               <td>{{student.cohort}}</td>
-               <td>{{student.leerjaar}}</td>
-               <td>{{student.studierichting}}</td>
-               <td>
-                  <a href="/update_student/{{ student.student_nr }}" class="btn btn-warning btn-xs" data-toggle="modal"
-                     data-target="#modaledit_student{{ student.student_nr }}">Wijzig</a>
-                  <a href="/delete_student/{{ student.student_nr }}" class="btn btn-danger btn-xs"
-                     onclick="return confirm('Bent u zeker?')">Verwijder</a>
-               </td>
-            </tr>
+            <!-- Student table view -->
+            <table class="table table-striped">
+               <tr>
+                  <th>Student nr.</th>
+                  <th>Voornaam</th>
+                  <th>Achternaam</th>
+                  <th>Cohort</th>
+                  <th>Leerjaar</th>
+                  <th>Studierichting</th>
+                  <th></th>
+               </tr>
+               {% for student in students %}
+               <tr>
+                  <td>{{student.student_nr}}</td>
+                  <td>{{student.voornaam}}</td>
+                  <td>{{student.achternaam}}</td>
+                  <td>{{student.cohort}}</td>
+                  <td>{{student.leerjaar}}</td>
+                  <td>{{student.studierichting}}</td>
+                  <td>
+                     <a href="/update_student/{{ student.student_nr }}" class="btn btn-warning btn-xs"
+                        data-toggle="modal" data-target="#modaledit_student{{ student.student_nr }}">Wijzig</a>
+                     <a href="/delete_student/{{ student.student_nr }}" class="btn btn-danger btn-xs"
+                        onclick="return confirm('Bent u zeker?')">Verwijder</a>
+                  </td>
+               </tr>
 
-            <!-- update form modal -->
-            <div id="modaledit_student{{ student.student_nr }}" class="modal fade" role="dialog">
-               <div class="modal-dialog">
-                  <div class="modal-content">
-                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Wijzig Student</h4>
-                     </div>
-                     <div class="modal-body">
-                        <form action="{{ url_for('update_student') }}" method="POST" autocomplete="off">
-                           <div class="form-group">
-                              <label>Student nr.:</label>
-                              <input type="hidden" name="id" value="{{ student.student_nr }}">
-                              <input type="text" class="form-control" name="student_nr"
-                                 value="{{ student.student_nr }}">
-                           </div>
-                           <div class="form-group">
-                              <label>Voornaam:</label>
-                              <input type="text" class="form-control" name="voornaam" value="{{ student.voornaam }}">
-                           </div>
-                           <div class="form-group">
-                              <label>Achternaam:</label>
-                              <input type="text" class="form-control" name="achternaam"
-                                 value="{{ student.achternaam }}">
-                           </div>
-                           <div class="form-group">
-                              <label>Cohort:</label>
-                              <input type="text" class="form-control" name="cohort" value="{{ student.cohort }}">
-                           </div>
-                           <div class="form-group">
-                              <label>Leerjaar:</label>
-                              <input type="text" class="form-control" name="leerjaar" value="{{ student.leerjaar }}">
-                           </div>
-                           <div class="form-group">
-                              <label>Studierichting:</label>
-                              <input type="text" class="form-control" name="studierichting"
-                                 value="{{ student.studierichting }}">
-                           </div>
-                           <div class="form-group">
-                              <button class="btn btn-primary" type="submit">Bewerken</button>
-                           </div>
-                        </form>
-                     </div>
-                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+               <!-- update form modal -->
+               <div id="modaledit_student{{ student.student_nr }}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal">&times;</button>
+                           <h4 class="modal-title">Wijzig Student</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{ url_for('update_student') }}" method="POST" autocomplete="off">
+                              <div class="form-group">
+                                 <label>Student nr.:</label>
+                                 <input type="hidden" name="id" value="{{ student.student_nr }}">
+                                 <input type="text" class="form-control" name="student_nr"
+                                    value="{{ student.student_nr }}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Voornaam:</label>
+                                 <input type="text" class="form-control" name="voornaam" value="{{ student.voornaam }}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Achternaam:</label>
+                                 <input type="text" class="form-control" name="achternaam"
+                                    value="{{ student.achternaam }}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Cohort:</label>
+                                 <input type="text" class="form-control" name="cohort" value="{{ student.cohort }}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Leerjaar:</label>
+                                 <input type="text" class="form-control" name="leerjaar" value="{{ student.leerjaar }}">
+                              </div>
+                              <div class="form-group">
+                                 <label>Studierichting:</label>
+                                 <input type="text" class="form-control" name="studierichting"
+                                    value="{{ student.studierichting }}">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Bewerken</button>
+                              </div>
+                           </form>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                        </div>
                      </div>
                   </div>
                </div>
-            </div>
-            {% endfor  %}
-            </tbody>
-         </table>
-      </div>
+               {% endfor  %}
+               </tbody>
+            </table>
+         </div>
 
-      <!-- new student Modal -->
-      <div id="newstudentmodal" class="modal fade" role="dialog">
-         <div class="modal-dialog">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Voeg Nieuw Student</h4>
-               </div>
-               <div class="modal-body">
-                  <form action="{{ url_for('new_student') }}" method="POST" autocomplete="off">
-                     <div class="form-group">
-                        <label>Student nr.:</label>
-                        <input type="text" class="form-control" name="student_nr" required="1">
-                     </div>
-                     <div class="form-group">
-                        <label>Voornaam:</label>
-                        <input type="text" class="form-control" name="voornaam" required="1">
-                     </div>
-                     <div class="form-group">
-                        <label>Achternaam:</label>
-                        <input type="text" class="form-control" name="achternaam" required="1">
-                     </div>
-                     <div class="form-group">
-                        <label>Cohort:</label>
-                        <input type="text" class="form-control" name="cohort" required="1">
-                     </div>
-                     <div class="form-group">
-                        <label>Leerjaar:</label>
-                        <input type="text" class="form-control" name="leerjaar" required="1">
-                     </div>
-                     <div class="form-group">
-                        <label>Studierichting:</label>
-                        <input type="text" class="form-control" name="studierichting" required="1">
-                     </div>
-                     <div class="form-group">
-                        <button class="btn btn-primary" type="submit">Toevoegen</button>
-                     </div>
-                  </form>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+         <!-- new student Modal -->
+         <div id="newstudentmodal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                     <h4 class="modal-title">Voeg Nieuw Student</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="{{ url_for('new_student') }}" method="POST" autocomplete="off">
+                        <div class="form-group">
+                           <label>Student nr.:</label>
+                           <input type="text" class="form-control" name="student_nr" required="1">
+                        </div>
+                        <div class="form-group">
+                           <label>Voornaam:</label>
+                           <input type="text" class="form-control" name="voornaam" required="1">
+                        </div>
+                        <div class="form-group">
+                           <label>Achternaam:</label>
+                           <input type="text" class="form-control" name="achternaam" required="1">
+                        </div>
+                        <div class="form-group">
+                           <label>Cohort:</label>
+                           <input type="text" class="form-control" name="cohort" required="1">
+                        </div>
+                        <div class="form-group">
+                           <label>Leerjaar:</label>
+                           <input type="text" class="form-control" name="leerjaar" required="1">
+                        </div>
+                        <div class="form-group">
+                           <label>Studierichting:</label>
+                           <input type="text" class="form-control" name="studierichting" required="1">
+                        </div>
+                        <div class="form-group">
+                           <button class="btn btn-primary" type="submit">Toevoegen</button>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Sluiten</button>
+                  </div>
                </div>
             </div>
          </div>
       </div>
    </div>
 </div>
-
 {% endblock %}

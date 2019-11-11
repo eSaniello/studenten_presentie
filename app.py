@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 from flask_mysqldb import MySQL
+import pdfkit
 
 
 app = Flask(__name__)
@@ -14,6 +15,9 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 searched = False
+
+path_wkthmltopdf = r'C:\Python\wkhtmltopdf\bin\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
 
 # Presentie page
 @app.route('/')
@@ -34,6 +38,7 @@ def index():
         presenties
         INNER JOIN studenten ON studenten.student_nr = presenties.student_nr
         INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
+        ORDER BY datum
     """)
     joinData = cur.fetchall()
 
@@ -115,6 +120,7 @@ def search_presentie():
         presenties
         INNER JOIN studenten ON studenten.student_nr = presenties.student_nr
         INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
+        ORDER BY datum
     """)
     joinData = cur.fetchall()
 
@@ -156,6 +162,7 @@ def search_presentie():
         presentie LIKE %s OR
         blok LIKE %s OR
         datum LIKE %s
+        ORDER BY datum
         """, ([search, search, search, search, search, search, search, search, search]))
         mysql.connection.commit()
         data = cur.fetchall()
@@ -165,6 +172,39 @@ def search_presentie():
 
         return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken, search_data=data, searched=searched, term=search)
 
+
+@app.route('/presentie_pdf')
+def presentie_pdf():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT
+        id,
+        studenten.voornaam,
+        studenten.achternaam,
+        studenten.student_nr,
+        vakken.vak_code,
+        vakken.naam,
+        presentie,
+        blok,
+        datum
+        FROM
+        presenties
+        INNER JOIN studenten ON studenten.student_nr = presenties.student_nr
+        INNER JOIN vakken ON vakken.vak_code = presenties.vak_code
+        ORDER BY datum
+    """)
+    presenties = cur.fetchall()
+    cur.close()
+
+    rendered = render_template(
+        'presenties_pdf_html.html', presenties=presenties)
+    pdf = pdfkit.from_string(rendered, False, configuration=config)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=presenties.pdf'
+
+    return response
 
 # Student page
 @app.route('/studenten')
