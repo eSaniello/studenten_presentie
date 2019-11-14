@@ -3,6 +3,9 @@ from flask_mysqldb import MySQL
 import pdfkit
 
 
+isWindows = True
+
+
 app = Flask(__name__)
 app.secret_key = 'xhwbx7623bxuiwex[d3d3]3d3d3d5r'
 
@@ -17,8 +20,8 @@ mysql = MySQL(app)
 searched = False
 
 # windows
-# path_wkthmltopdf = r'C:\Python\wkhtmltopdf\bin\wkhtmltopdf.exe'
-# config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
+path_wkthmltopdf = r'C:\Python\wkhtmltopdf\bin\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
 
 # Presentie page
 @app.route('/')
@@ -199,11 +202,13 @@ def presentie_pdf():
 
     rendered = render_template(
         'presenties_pdf_html.html', presenties=presenties)
-    # windows
-    # pdf = pdfkit.from_string(rendered, False, configuration=config)
 
-    # mac
-    pdf = pdfkit.from_string(rendered, False)
+    if(isWindows == True):
+        # windows
+        pdf = pdfkit.from_string(rendered, False, configuration=config)
+    else:
+        # mac
+        pdf = pdfkit.from_string(rendered, False)
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
