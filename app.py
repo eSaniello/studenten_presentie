@@ -16,8 +16,9 @@ mysql = MySQL(app)
 
 searched = False
 
-path_wkthmltopdf = r'C:\Python\wkhtmltopdf\bin\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
+# windows
+# path_wkthmltopdf = r'C:\Python\wkhtmltopdf\bin\wkhtmltopdf.exe'
+# config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
 
 # Presentie page
 @app.route('/')
@@ -198,7 +199,11 @@ def presentie_pdf():
 
     rendered = render_template(
         'presenties_pdf_html.html', presenties=presenties)
-    pdf = pdfkit.from_string(rendered, False, configuration=config)
+    # windows
+    # pdf = pdfkit.from_string(rendered, False, configuration=config)
+
+    # mac
+    pdf = pdfkit.from_string(rendered, False)
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
