@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 from flask_mysqldb import MySQL
 import pdfkit
+import pandas as pd
 
 
 isWindows = True
@@ -272,6 +273,21 @@ def update_student():
         flash("Student " + achternaam + " is bijgewerkt!")
         mysql.connection.commit()
         return redirect(url_for('studenten'))
+
+
+@app.route('/student_csv')
+def student_csv():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT student_nr, achternaam, voornaam, cohort FROM studenten")
+    data = cur.fetchall()
+    cur.close()
+
+    df = pd.DataFrame(data)
+    df.to_csv('studenten.csv', index = False)
+
+    flash('Student data exporteerd naar csv bestand. (studenten.csv)')
+    return redirect(url_for('studenten'))
+
 
 # Vakken page
 @app.route('/vakken')

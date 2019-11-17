@@ -22,11 +22,16 @@
             <h2>
                Studenten Lijst
                <button type="button" class="btn btn-success  pull-right" data-toggle="modal"
-                  data-target="#newstudentmodal">Nieuw Student Toevoegen</button></h2>
+                  data-target="#newstudentmodal">Nieuw Student Toevoegen</button>
+
+               <a href="/student_csv" class="btn btn-danger pull-right" style="margin-right: 10px;">Export</a>
+
+               </h2>
 
             {% include 'includes/messages.html' %}
 
             <!-- Student table view -->
+            {{students[0].voornaam}}
             <table class="table table-striped">
                <tr>
                   <th>Student nr.</th>
