@@ -10,6 +10,17 @@
         <th>Blok</th>
         <th>Datum</th>
     </tr>
+    {%if search == True%}
+    {% for Presentie in search_data %}
+    <tr>
+        <td>{{Presentie.achternaam}}</td>
+        <td>{{Presentie.naam}}</td>
+        <td>{{Presentie.presentie}}</td>
+        <td>{{Presentie.blok}}</td>
+        <td>{{Presentie.datum}}</td>
+    </tr>
+    {%endfor%}
+    {%else%}
     {% for Presentie in presenties %}
     <tr>
         <td>{{Presentie.achternaam}}</td>
@@ -19,5 +30,6 @@
         <td>{{Presentie.datum}}</td>
     </tr>
     {%endfor%}
+    {%endif%}
 </table>
 {% endblock %}

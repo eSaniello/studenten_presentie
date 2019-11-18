@@ -58,7 +58,10 @@ def index():
     vakken = cur.fetchall()
     cur.close()
 
+    global searched
     searched = False
+    global data_searched
+    data_searched = []
 
     return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken, searched=searched)
 
@@ -173,7 +176,10 @@ def search_presentie():
         data = cur.fetchall()
         cur.close()
 
+        global searched
         searched = True
+        global data_searched 
+        data_searched = data
 
         return render_template('index.html', presenties=joinData, studenten=studenten, vakken=vakken, search_data=data, searched=searched, term=search)
 
@@ -201,8 +207,7 @@ def presentie_pdf():
     presenties = cur.fetchall()
     cur.close()
 
-    rendered = render_template(
-        'presenties_pdf_html.html', presenties=presenties)
+    rendered = render_template('presenties_pdf_html.html', presenties=presenties, search = searched, search_data = data_searched)
 
     if(isWindows == True):
         # windows
@@ -283,7 +288,7 @@ def student_csv():
     cur.close()
 
     df = pd.DataFrame(data)
-    df.to_csv('studenten.csv', index = False)
+    df.to_csv('studenten.csv', index=False)
 
     flash('Student data exporteerd naar csv bestand. (studenten.csv)')
     return redirect(url_for('studenten'))
