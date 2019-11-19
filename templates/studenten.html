@@ -26,7 +26,7 @@
 
                <a href="/student_csv" class="btn btn-danger pull-right" style="margin-right: 10px;">Export</a>
 
-               </h2>
+            </h2>
 
             {% include 'includes/messages.html' %}
 
@@ -54,7 +54,7 @@
                      <a href="/update_student/{{ student.student_nr }}" class="btn btn-warning btn-xs"
                         data-toggle="modal" data-target="#modaledit_student{{ student.student_nr }}">Wijzig</a>
                      <a href="/delete_student/{{ student.student_nr }}" class="btn btn-danger btn-xs"
-                        onclick="return confirm('Bent u zeker?')">Verwijder</a>
+                        onclick="return confirm('De selecteerde student heeft presentie data.\nBent u zeker?')">Verwijder</a>
                   </td>
                </tr>
 
