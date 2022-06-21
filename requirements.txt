@@ -13,7 +13,7 @@ Jinja2==2.10.3
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mysqlclient==1.4.5
-numpy==1.17.4
+numpy==1.22.0
 pandas==0.25.3
 pathspec==0.6.0
 pdfkit==0.6.1
